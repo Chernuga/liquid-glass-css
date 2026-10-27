@@ -35,7 +35,8 @@
     "build": "tsup",
     "test": "pnpm build && node --test \"test/*.test.mjs\"",
     "demo": "pnpm build && node demo/serve.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "pnpm build"
   },
   "keywords": [
     "liquid-glass",
@@ -49,6 +50,19 @@
     "ui"
   ],
   "license": "MIT",
+  "author": "Chernuga",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chernuga/liquid-glass-css.git"
+  },
+  "homepage": "https://github.com/Chernuga/liquid-glass-css#readme",
+  "bugs": {
+    "url": "https://github.com/Chernuga/liquid-glass-css/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "devDependencies": {
     "tsup": "^8.3.5",
     "typescript": "^5.6.3"

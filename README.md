@@ -148,6 +148,19 @@ pnpm test    # node:test physics suite
 pnpm demo    # http://localhost:8080/demo/
 ```
 
+## Releasing
+
+Publishing is automated by [`.github/workflows/publish.yml`](.github/workflows/publish.yml):
+
+1. `npm version patch|minor|major` (updates `package.json`, commits, tags).
+2. Push the commit and the tag: `git push --follow-tags`.
+3. Create a GitHub **Release** for the tag — the workflow verifies the tag
+   matches the package version, runs typecheck + tests, then publishes to
+   npm with [provenance](https://docs.npmjs.com/generating-provenance-statements).
+
+Requires an `NPM_TOKEN` repository secret (an npm *Automation* access token);
+provenance uses GitHub's OIDC, so no other secrets are needed.
+
 ## Credits
 
 - [Chris Feijoo — Liquid Glass in the Browser](https://kube.io/blog/liquid-glass-css-svg/)
