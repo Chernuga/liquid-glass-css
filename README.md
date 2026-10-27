@@ -20,6 +20,8 @@ Based on the approach described in Chris Feijoo's excellent article
 
 ![Demo: liquid glass components refracting the page behind them](docs/screenshot.png)
 
+**Live demo:** https://chernuga.github.io/liquid-glass-css/demo/
+
 > [!IMPORTANT]
 > **Chrome / Edge only** for the full effect: it relies on SVG filters as
 > `backdrop-filter`, which no other engine supports yet. Firefox and Safari
@@ -27,29 +29,28 @@ Based on the approach described in Chris Feijoo's excellent article
 
 ## Install
 
-```sh
-npm install liquid-glass-css
-```
-
-or from a CDN:
+No npm account needed — the library is served directly from GitHub by
+[jsDelivr](https://www.jsdelivr.com/). Pin a release tag (recommended), or use
+`@main` for the latest build:
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/liquid-glass-css/css/liquid-glass.css" />
-<script type="module" src="https://unpkg.com/liquid-glass-css/dist/auto.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Chernuga/liquid-glass-css@v0.1.0/css/liquid-glass.css" />
+<script type="module" src="https://cdn.jsdelivr.net/gh/Chernuga/liquid-glass-css@v0.1.0/dist/auto.js"></script>
+```
+
+Or install straight from the repository:
+
+```sh
+npm install github:Chernuga/liquid-glass-css
 ```
 
 ## Quick start
 
-**Option A — automatic.** Import the stylesheet and the `auto` entry. Every
+**Option A — automatic (CDN).** Add the two tags above; every
 `.liquid-glass` (or `[data-liquid-glass]`) element gets the effect and stays
-in sync with DOM changes:
+in sync with DOM changes.
 
-```js
-import "liquid-glass-css/style.css";
-import "liquid-glass-css/auto";
-```
-
-**Option B — manual.**
+**Option B — manual (bundler).**
 
 ```js
 import "liquid-glass-css/style.css";
@@ -150,16 +151,18 @@ pnpm demo    # http://localhost:8080/demo/
 
 ## Releasing
 
-Publishing is automated by [`.github/workflows/publish.yml`](.github/workflows/publish.yml):
+Distribution is **GitHub-first** — no npm publishing required:
 
-1. `npm version patch|minor|major` (updates `package.json`, commits, tags).
-2. Push the commit and the tag: `git push --follow-tags`.
-3. Create a GitHub **Release** for the tag — the workflow verifies the tag
-   matches the package version, runs typecheck + tests, then publishes to
-   npm with [provenance](https://docs.npmjs.com/generating-provenance-statements).
+1. `pnpm build` and commit the updated `dist/` (the build-dist workflow also
+   keeps it fresh on `main`).
+2. `npm version patch|minor|major` — bumps `package.json`, commits, tags.
+3. `git push --follow-tags`.
+4. Create a GitHub **Release** for the tag. Users can then pin
+   `https://cdn.jsdelivr.net/gh/Chernuga/liquid-glass-css@vX.Y.Z/…`.
 
-Requires an `NPM_TOKEN` repository secret (an npm *Automation* access token);
-provenance uses GitHub's OIDC, so no other secrets are needed.
+Optional: `.github/workflows/publish.yml` (manual `workflow_dispatch`) can
+publish to npm via **Trusted Publishing (OIDC)** — no tokens. It requires a
+trusted publisher configured on the npm package page.
 
 ## Credits
 
