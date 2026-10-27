@@ -1,0 +1,26 @@
+name: Token debug (temporary)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - name: Who is this token?
+        run: |
+          echo "--- whoami ---"
+          npm whoami || true
+          echo "--- profile ---"
+          npm profile get --json || true
+          echo "--- token list ---"
+          npm token list || true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
