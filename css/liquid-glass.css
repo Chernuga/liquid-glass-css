@@ -1,0 +1,96 @@
+/**
+ * liquid-glass-css — default stylesheet
+ *
+ * Importing this file gives you the `.liquid-glass` utility class with
+ * sensible defaults. Every default is a custom property inside `:where()`,
+ * so anything you write in your own CSS wins without specificity fights.
+ *
+ * Usage:
+ *   <link rel="stylesheet" href="liquid-glass-css/style.css" />
+ *   <div class="liquid-glass">…</div>
+ */
+
+:where(.liquid-glass, [data-liquid-glass]) {
+  /* Surface profile: circle | squircle | concave | lip */
+  --lg-surface: squircle;
+  /* Bezel width (the curved ring where refraction happens) */
+  --lg-bezel: 16px;
+  /* Virtual glass depth; amplifies the displacement */
+  --lg-thickness: 60;
+  /* Index of refraction (glass ≈ 1.5) */
+  --lg-ior: 1.5;
+  /* Effect intensity, 0 = off, 1 = physically derived */
+  --lg-intensity: 1;
+  /* Backdrop blur before refraction (frost) */
+  --lg-blur: 2px;
+  /* Saturation boost after refraction */
+  --lg-saturate: 1.1;
+  /* Specular rim highlight opacity, 0..1 */
+  --lg-specular: 0.5;
+  /* Light direction for the highlight */
+  --lg-specular-angle: 60deg;
+  /* Highlight rim width */
+  --lg-specular-width: 1.2px;
+  /* Brightness compensation: none | light | dark */
+  --lg-scheme: none;
+  /* Magnifying pre-pass scale in px, 0 = off */
+  --lg-magnify: 0;
+
+  /* The effect needs rounded corners to read as glass. */
+  border-radius: var(--lg-radius, 16px);
+}
+
+/**
+ * Presets matching the components from the reference article
+ * (https://kube.io/blog/liquid-glass-css-svg/).
+ */
+
+/* Pill / capsule elements */
+:where(.lg-pill) {
+  --lg-radius: 999px;
+  --lg-bezel: 14px;
+}
+
+/* Switch-style: concave center dip, raised rim */
+:where(.lg-switch) {
+  --lg-surface: lip;
+  --lg-radius: 999px;
+  --lg-bezel: 12px;
+  --lg-thickness: 80;
+}
+
+/* Strong, exaggerated refraction for hero elements */
+:where(.lg-strong) {
+  --lg-bezel: 24px;
+  --lg-thickness: 110;
+  --lg-specular: 0.8;
+}
+
+/* Subtle, closer to frosted glass with a light bend */
+:where(.lg-subtle) {
+  --lg-bezel: 10px;
+  --lg-thickness: 30;
+  --lg-intensity: 0.7;
+  --lg-specular: 0.3;
+}
+
+/**
+ * Fallback for browsers without SVG `backdrop-filter: url()` support
+ * (Firefox, Safari). Applied automatically by the runtime via the
+ * `.lg-fallback` class — a softer layered-blur approximation.
+ */
+:where(.liquid-glass.lg-fallback, [data-liquid-glass].lg-fallback) {
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  background-color: rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08),
+    0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :where(.liquid-glass.lg-fallback, [data-liquid-glass].lg-fallback) {
+    background-color: rgba(20, 20, 24, 0.35);
+  }
+}

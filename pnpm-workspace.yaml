@@ -1,0 +1,4 @@
+# esbuild resolves its platform binary from optional dependencies at
+# runtime; its postinstall script is unnecessary, so don't warn about it.
+ignoredBuiltDependencies:
+  - esbuild

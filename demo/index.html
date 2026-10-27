@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>liquid-glass-css — demo</title>
+  <link rel="stylesheet" href="../css/liquid-glass.css" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: #fff;
+      background: #0b1020;
+      overflow-x: hidden;
+    }
+
+    /* ---------- Scenic backdrop: the glass needs something to refract ---------- */
+    .scene {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background:
+        radial-gradient(60vmax 60vmax at 15% 10%, #ff5fa2 0%, transparent 55%),
+        radial-gradient(55vmax 55vmax at 85% 20%, #4f7cff 0%, transparent 55%),
+        radial-gradient(70vmax 70vmax at 50% 100%, #19c2a6 0%, transparent 60%),
+        #0b1020;
+    }
+    .scene::before {
+      content: "";
+      position: absolute;
+      inset: -50%;
+      background-image:
+        linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.14) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: drift 14s linear infinite;
+    }
+    .scene::after {
+      content: "LIQUID GLASS — liquid-glass-css — ";
+      position: absolute;
+      top: 38%;
+      left: -10%;
+      white-space: nowrap;
+      font-size: 15vmin;
+      font-weight: 800;
+      letter-spacing: .05em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,.22);
+      animation: marquee 22s linear infinite;
+    }
+    @keyframes drift { to { transform: translate(48px, 48px); } }
+    @keyframes marquee { to { transform: translateX(30%); } }
+
+    main {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 56px 24px 96px;
+      display: grid;
+      gap: 28px;
+    }
+    h1 { font-size: clamp(28px, 5vw, 44px); margin: 0; text-shadow: 0 2px 24px rgba(0,0,0,.45); }
+    h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .18em; opacity: .75; margin: 0 0 12px; }
+    .muted { opacity: .8; }
+
+    /* ---------- Glass components ---------- */
+    .card {
+      padding: 28px;
+      --lg-radius: 28px;
+      --lg-bezel: 22px;
+      --lg-thickness: 90;
+    }
+    .card h3 { margin: 0 0 8px; font-size: 22px; }
+    .card p { margin: 0; }
+
+    .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+
+    .pill {
+      padding: 12px 26px;
+      font-size: 15px;
+      color: #fff;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      --lg-radius: 999px;
+      --lg-bezel: 13px;
+      --lg-thickness: 50;
+    }
+    .pill:active { transform: scale(.97); }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      flex: 1;
+      min-width: 240px;
+      --lg-radius: 999px;
+      --lg-bezel: 14px;
+      --lg-thickness: 45;
+      --lg-blur: 3px;
+    }
+    .search input {
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      font-size: 15px;
+    }
+    .search input::placeholder { color: rgba(255,255,255,.65); }
+
+    .switch {
+      position: relative;
+      width: 76px;
+      height: 44px;
+      cursor: pointer;
+      border: 0;
+      background: transparent;
+      --lg-surface: lip;
+      --lg-radius: 999px;
+      --lg-bezel: 12px;
+      --lg-thickness: 110;
+    }
+    .switch .knob {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.35);
+      transition: transform .25s cubic-bezier(.6, 0, .2, 1.4);
+    }
+    .switch[aria-checked="true"] .knob { transform: translateX(32px); }
+
+    .slider {
+      width: 260px;
+      height: 14px;
+      --lg-radius: 999px;
+      --lg-bezel: 7px;
+      --lg-thickness: 26;
+      --lg-specular: .35;
+    }
+    .slider .fill {
+      height: 100%;
+      width: 40%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,.85), rgba(255,255,255,.35));
+    }
+
+    .player {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 18px;
+      align-items: center;
+      padding: 20px;
+      max-width: 460px;
+      --lg-radius: 24px;
+      --lg-bezel: 20px;
+      --lg-thickness: 80;
+      --lg-scheme: dark;
+    }
+    .player img { width: 86px; height: 86px; border-radius: 14px; display: block; }
+    .player .meta b { display: block; font-size: 16px; }
+    .player .meta span { font-size: 13px; opacity: .75; }
+    .player .controls { display: flex; gap: 14px; margin-top: 10px; font-size: 18px; }
+
+    /* ---------- Playground ---------- */
+    .playground { padding: 28px; --lg-radius: 28px; }
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px 28px;
+      margin-top: 18px;
+    }
+    .controls-grid label { font-size: 12px; opacity: .85; display: block; margin-bottom: 4px; }
+    .controls-grid input[type="range"] { width: 100%; accent-color: #ff5fa2; }
+    .controls-grid select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(0,0,0,.3);
+      color: #fff;
+    }
+    .value { float: right; font-variant-numeric: tabular-nums; opacity: .7; }
+
+    header.top { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+    code { background: rgba(255,255,255,.12); padding: 2px 7px; border-radius: 6px; font-size: .9em; }
+  </style>
+</head>
+<body>
+  <div class="scene"></div>
+
+  <main>
+    <header class="top">
+      <h1>liquid-glass-css</h1>
+      <span class="muted">Apple-style Liquid Glass, driven by CSS custom properties</span>
+    </header>
+
+    <section>
+      <h2>Components</h2>
+      <div class="row">
+        <div class="liquid-glass card" style="max-width: 420px">
+          <h3>Liquid Glass card</h3>
+          <p class="muted">
+            A plain <code>&lt;div class="liquid-glass"&gt;</code>. All defaults
+            come from the stylesheet; tweak any <code>--lg-*</code> property to
+            restyle it.
+          </p>
+        </div>
+
+        <div class="liquid-glass player">
+          <img alt="Album art" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 86 86'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff5fa2'/%3E%3Cstop offset='1' stop-color='%234f7cff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='86' height='86' fill='url(%23g)'/%3E%3Ccircle cx='43' cy='43' r='18' fill='rgba(255,255,255,.25)'/%3E%3C/svg%3E" />
+          <div class="meta">
+            <b>Midnight City</b>
+            <span>M83 — Hurry Up, We're Dreaming</span>
+            <div class="controls">⏮ ▶ ⏭</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Controls</h2>
+      <div class="row">
+        <div class="liquid-glass search">
+          <span>⌕</span>
+          <input placeholder="Search with liquid glass…" />
+        </div>
+        <button class="liquid-glass pill">Get started</button>
+        <button class="liquid-glass pill" style="--lg-surface: circle">Circle surface</button>
+        <button class="liquid-glass switch" id="switch" role="switch" aria-checked="false" aria-label="Toggle">
+          <span class="knob"></span>
+        </button>
+        <div class="liquid-glass slider"><div class="fill"></div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Playground — live CSS variables</h2>
+      <div class="liquid-glass playground" id="playground">
+        <b>Every slider below just sets a <code>--lg-*</code> custom property on this panel.</b>
+        <div class="controls-grid" id="controls"></div>
+      </div>
+    </section>
+
+    <p class="muted">
+      Requires Chrome/Edge (SVG filters as <code>backdrop-filter</code>).
+      Other browsers get the blur fallback automatically.
+    </p>
+  </main>
+
+  <script type="module">
+    import { startLiquidGlass, refreshLiquidGlass } from "../dist/index.js";
+
+    startLiquidGlass();
+
+    document.getElementById("switch").addEventListener("click", (e) => {
+      const el = e.currentTarget;
+      el.setAttribute("aria-checked", el.getAttribute("aria-checked") !== "true");
+    });
+
+    // Playground: each control writes a --lg-* custom property on the panel.
+    const playground = document.getElementById("playground");
+    const controls = document.getElementById("controls");
+
+    const specs = [
+      { label: "Surface", prop: "--lg-surface", type: "select", options: ["squircle", "circle", "concave", "lip"], value: "squircle" },
+      { label: "Scheme", prop: "--lg-scheme", type: "select", options: ["none", "light", "dark"], value: "none" },
+      { label: "Bezel width", prop: "--lg-bezel", min: 4, max: 60, step: 1, value: 18, unit: "px" },
+      { label: "Thickness", prop: "--lg-thickness", min: 0, max: 200, step: 1, value: 60 },
+      { label: "Refraction index", prop: "--lg-ior", min: 1, max: 2.2, step: 0.01, value: 1.5 },
+      { label: "Intensity", prop: "--lg-intensity", min: 0, max: 1.5, step: 0.01, value: 1 },
+      { label: "Blur", prop: "--lg-blur", min: 0, max: 12, step: 0.1, value: 2, unit: "px" },
+      { label: "Saturate", prop: "--lg-saturate", min: 0.5, max: 3, step: 0.05, value: 1.1 },
+      { label: "Specular opacity", prop: "--lg-specular", min: 0, max: 1, step: 0.01, value: 0.5 },
+      { label: "Specular angle", prop: "--lg-specular-angle", min: 0, max: 360, step: 1, value: 60, unit: "deg" },
+      { label: "Magnify", prop: "--lg-magnify", min: 0, max: 60, step: 1, value: 0 },
+      { label: "Corner radius", prop: "--lg-radius", min: 8, max: 120, step: 1, value: 28, unit: "px" },
+    ];
+
+    for (const spec of specs) {
+      const wrap = document.createElement("div");
+      const label = document.createElement("label");
+      label.innerHTML = `${spec.label} <span class="value"></span>`;
+      const valueEl = label.querySelector(".value");
+      wrap.appendChild(label);
+
+      const set = (raw) => {
+        const v = spec.unit ? `${raw}${spec.unit}` : String(raw);
+        playground.style.setProperty(spec.prop, v);
+        valueEl.textContent = v;
+      };
+
+      if (spec.type === "select") {
+        const select = document.createElement("select");
+        for (const o of spec.options) {
+          const opt = document.createElement("option");
+          opt.value = opt.textContent = o;
+          select.appendChild(opt);
+        }
+        select.value = spec.value;
+        select.addEventListener("change", () => set(select.value));
+        wrap.appendChild(select);
+        set(spec.value);
+      } else {
+        const input = document.createElement("input");
+        input.type = "range";
+        Object.assign(input, { min: spec.min, max: spec.max, step: spec.step, value: spec.value });
+        input.addEventListener("input", () => set(input.value));
+        wrap.appendChild(input);
+        set(spec.value);
+      }
+      controls.appendChild(wrap);
+    }
+
+    // The MutationObserver in startLiquidGlass() already refreshes on style
+    // changes; no manual wiring needed. Kept for browsers with async MO timing:
+    new MutationObserver(() => refreshLiquidGlass(playground))
+      .observe(playground, { attributes: true, attributeFilter: ["style"] });
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{
+  "name": "liquid-glass-css",
+  "version": "0.1.0",
+  "description": "Apple-style Liquid Glass (real refraction + specular highlight) for any element, driven entirely by CSS custom properties",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./auto": {
+      "types": "./dist/auto.d.ts",
+      "import": "./dist/auto.js",
+      "require": "./dist/auto.cjs"
+    },
+    "./style.css": "./css/liquid-glass.css",
+    "./css": "./css/liquid-glass.css"
+  },
+  "files": [
+    "dist",
+    "css",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "./dist/auto.js",
+    "./dist/auto.cjs",
+    "./css/*"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "pnpm build && node --test \"test/*.test.mjs\"",
+    "demo": "pnpm build && node demo/serve.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "liquid-glass",
+    "glass",
+    "refraction",
+    "backdrop-filter",
+    "svg-filters",
+    "displacement-map",
+    "css",
+    "apple",
+    "ui"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3"
+  }
+}
