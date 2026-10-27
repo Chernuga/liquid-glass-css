@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # npm provenance / OIDC
+  id-token: write # OIDC token for npm trusted publishing (no NPM_TOKEN needed)
 
 jobs:
   publish:
@@ -19,7 +19,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24 # ships npm >= 11.5.1 (trusted publishing)
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
@@ -37,7 +37,9 @@ jobs:
       - run: pnpm test
       - run: pnpm build
 
-      - name: Publish to npm
-        run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Authenticates via OIDC against the trusted publisher configured on
+      # npmjs.com (Chernuga / liquid-glass-css / publish.yml).
+      # Requires "Allow npm publish" on that configuration; otherwise use
+      # `npm stage publish` and approve the staged version in the npm UI.
+      - name: Publish to npm (trusted publishing)
+        run: npm publish --access public
